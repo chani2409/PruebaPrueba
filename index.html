@@ -1,109 +1,136 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ASFIGES — Estudio Creativo</title>
-    <meta name="description" content="Experiencias digitales inmersivas con 3D, animación y diseño interactivo." />
-    <meta name="theme-color" content="#0f172a" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estudio Creativo</title>
+  <meta name="description" content="Experiencias digitales inmersivas con 3D, animación y diseño interactivo." />
+  <link rel="stylesheet" href="./style.css" />
 
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap" as="style" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <!-- GSAP -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
-    <link rel="stylesheet" href="./style.css" />
-    <script type="module" src="./script.js"></script>
+  <!-- Three.js (necesario para el fondo 3D) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <!-- Nuestro script principal -->
+  <script type="module" src="./script.js"></script>
 </head>
-<body class="bg-gray-900 text-white font-sans antialiased relative selection:bg-teal-400/20">
+<body class="bg-gray-900 text-white font-sans">
+  <!-- Header -->
+  <header class="p-4 bg-gray-800 fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur">
+    <nav class="max-w-6xl mx-auto flex justify-between items-center">
+      <span class="font-bold text-teal-400 tracking-wide">LOGO</span>
+      <div class="space-x-4 text-sm sm:text-base">
+        <a href="#hero" class="hover:text-teal-400 transition-colors">Hero</a>
+        <a href="#featured" class="hover:text-teal-400 transition-colors">Featured</a>
+        <a href="#about" class="hover:text-teal-400 transition-colors">About</a>
+      </div>
+    </nav>
+  </header>
 
-    <header class="p-4 bg-gray-800/80 fixed top-0 inset-x-0 z-50 border-b border-white/10 backdrop-blur supports-[backdrop-filter]:backdrop-blur-lg">
-        <nav class="max-w-6xl mx-auto flex justify-between items-center" aria-label="Navegación principal">
-            <a href="#hero" class="font-extrabold text-teal-400 tracking-wide text-lg sm:text-xl select-none font-display focus:outline-none focus:ring-2 focus:ring-teal-400 rounded glitch-hover" data-text="ASFIGES">
-                ASFIGES
-            </a>
-            <ul class="flex space-x-4 text-sm sm:text-base">
-                <li><a href="#hero" data-magnetic class="hover:text-teal-400 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 rounded glitch-hover" data-text="Hero">Hero</a></li>
-                <li><a href="#featured" data-magnetic class="hover:text-teal-400 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 rounded glitch-hover" data-text="Featured">Featured</a></li>
-                <li><a href="#about" data-magnetic class="hover:text-teal-400 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 rounded glitch-hover" data-text="About">About</a></li>
-            </ul>
-        </nav>
-    </header>
+  <main class="pt-20">
+    <!-- Hero futurista con fondo 3D -->
+    <section id="hero" class="h-screen flex flex-col items-center justify-center relative overflow-hidden">
+      <!-- Canvas de Three.js -->
+      <div id="hero-canvas" class="absolute inset-0 -z-10"></div>
 
-    <main id="main" class="pt-20">
-        <section id="hero" class="h-[100svh] flex items-center justify-center relative overflow-hidden">
-            <div id="hero-canvas" class="absolute inset-0 -z-10"></div>
-            <div class="text-center relative z-10">
-                <h1 class="font-display text-5xl sm:text-6xl font-extrabold text-teal-400 hero-title">ASFIGES</h1>
-                <p class="mt-4 text-lg text-white/70">Experiencias digitales inmersivas</p>
-            </div>
-            <div class="absolute bottom-8 flex flex-col items-center text-white/60 z-10 pointer-events-none select-none animate-fade-in" aria-hidden="true">
-                <span class="text-xs mb-2">Scroll</span>
-                <div class="h-10 w-6 border border-white/40 rounded-full flex items-start justify-center p-1">
-                    <div class="h-2 w-2 bg-teal-400 rounded-full animate-bounce"></div>
-                </div>
-            </div>
-        </section>
+      <!-- Contenido del Hero -->
+      <div class="text-center px-4 relative z-10">
+        <h1 class="text-5xl sm:text-6xl font-extrabold mb-4 tracking-tight">Beyond Visions</h1>
+        <p class="text-lg text-white/70 max-w-xl mx-auto">
+          Creamos experiencias digitales que conectan con tu audiencia.
+        </p>
+      </div>
 
-        <section id="featured" class="py-24 max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl sm:text-4xl font-bold mb-12 text-center section-title">Featured Work</h2>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <article class="featured-card relative overflow-hidden rounded-lg group cursor-pointer will-change-transform">
-                    <img src="https://picsum.photos/800/600?random=21" alt="Interfaz interactiva 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <span class="text-lg font-semibold text-teal-400">Proyecto 1</span>
-                    </div>
-                </article>
-                <article class="featured-card relative overflow-hidden rounded-lg group cursor-pointer will-change-transform">
-                    <img src="https://picsum.photos/800/600?random=22" alt="Entorno WebGL 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <span class="text-lg font-semibold text-teal-400">Proyecto 2</span>
-                    </div>
-                </article>
-                <article class="featured-card relative overflow-hidden rounded-lg group cursor-pointer will-change-transform">
-                    <img src="https://picsum.photos/800/600?random=23" alt="Experiencia inmersiva 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <span class="text-lg font-semibold text-teal-400">Proyecto 3</span>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="about" class="py-24 max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl sm:text-4xl font-bold mb-6 section-title">Sobre nuestro estudio</h2>
-                <p class="text-white/80 mb-4">Combinamos diseño, 3D y desarrollo para crear experiencias digitales memorables; experimentación, detalle y narrativa en cada proyecto.</p>
-                <p class="text-white/70">Desde interfaces interactivas hasta entornos WebGL, diseñamos productos que se sienten vivos.</p>
-            </div>
-            <figure class="relative group">
-                <img src="https://picsum.photos/800/600?random=30" alt="Imagen del estudio" class="rounded-lg shadow-lg transition-transform duration-700 group-hover:scale-105 will-change-transform" loading="lazy" decoding="async" />
-                <figcaption class="sr-only">Vista del estudio creativo ASFIGES</figcaption>
-                <div class="absolute inset-0 bg-teal-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
-            </figure>
-        </section>
-    </main>
-
-    <footer id="footer" class="bg-gray-900/90 border-t border-white/10 py-12">
-        <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8 items-center">
-            <div>
-                <span class="font-extrabold text-teal-400 text-lg tracking-wide">ASFIGES</span>
-                <p class="text-white/60 mt-2 text-sm">Creando experiencias digitales inmersivas.</p>
-            </div>
-            <nav class="flex flex-col space-y-2 text-sm" aria-label="Enlaces del sitio">
-                <a href="#hero" class="hover:text-teal-400 transition focus:outline-none focus:ring-2 focus:ring-teal-400 rounded">Inicio</a>
-                <a href="#featured" class="hover:text-teal-400 transition focus:outline-none focus:ring-2 focus:ring-teal-400 rounded">Proyectos</a>
-                <a href="#about" class="hover:text-teal-400 transition focus:outline-none focus:ring-2 focus:ring-teal-400 rounded">Sobre nosotros</a>
-            </nav>
-            <div class="text-right text-sm text-white/50">
-                <p>&copy; <span id="year"></span> ASFIGES. Todos los derechos reservados.</p>
-            </div>
+      <!-- Indicador de scroll -->
+      <div class="absolute bottom-8 flex flex-col items-center text-white/60 z-10 pointer-events-none">
+        <span class="text-xs mb-2">Scroll</span>
+        <div class="h-10 w-6 border border-white/40 rounded-full flex items-start justify-center p-1">
+          <div class="h-2 w-2 bg-teal-400 rounded-full animate-bounce"></div>
         </div>
-    </footer>
+      </div>
+    </section>
 
+    <!-- Featured Work -->
+    <section id="featured" class="py-24 max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-12 text-center">Featured Work</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="featured-card relative overflow-hidden rounded-lg group cursor-pointer">
+          <img src="https://picsum.photos/800/600?random=21" alt="Proyecto destacado: interfaz interactiva 1" class="w-full h-full object-cover transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span class="text-lg font-semibold text-teal-400">Proyecto 1</span>
+          </div>
+        </div>
+        <div class="featured-card relative overflow-hidden rounded-lg group cursor-pointer">
+          <img src="https://picsum.photos/800/600?random=22" alt="Proyecto destacado: entorno WebGL 2" class="w-full h-full object-cover transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span class="text-lg font-semibold text-teal-400">Proyecto 2</span>
+          </div>
+        </div>
+        <div class="featured-card relative overflow-hidden rounded-lg group cursor-pointer">
+          <img src="https://picsum.photos/800/600?random=23" alt="Proyecto destacado: experiencia inmersiva 3" class="w-full h-full object-cover transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span class="text-lg font-semibold text-teal-400">Proyecto 3</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="py-24 max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6">Sobre nuestro estudio</h2>
+        <p class="text-white/80 mb-4">
+          Combinamos diseño, 3D y desarrollo para crear experiencias digitales memorables; experimentación, detalle y narrativa en cada proyecto.
+        </p>
+        <p class="text-white/70">
+          Desde interfaces interactivas hasta entornos WebGL, diseñamos productos que se sienten vivos.
+        </p>
+      </div>
+      <div class="relative group">
+        <img src="https://picsum.photos/800/600?random=30" alt="Imagen del estudio" class="rounded-lg shadow-lg transition-transform duration-700 group-hover:scale-105">
+        <div class="absolute inset-0 bg-teal-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="bg-gray-900 border-t border-white/10 py-12">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8 items-center">
+      <div>
+        <span class="font-bold text-teal-400 text-lg tracking-wide">LOGO</span>
+        <p class="text-white/60 mt-2 text-sm">Creando experiencias digitales inmersivas.</p>
+      </div>
+      <nav class="flex flex-col space-y-2 text-sm">
+        <a href="#hero" class="hover:text-teal-400 transition">Inicio</a>
+        <a href="#featured" class="hover:text-teal-400 transition">Proyectos</a>
+        <a href="#about" class="hover:text-teal-400 transition">Sobre nosotros</a>
+      </nav>
+      <div class="flex space-x-4 justify-start md:justify-end">
+        <a href="#" class="text-white/60 hover:text-teal-400 transition">Twitter</a>
+        <a href="#" class="text-white/60 hover:text-teal-400 transition">Instagram</a>
+        <a href="#" class="text-white/60 hover:text-teal-400 transition">LinkedIn</a>
+      </div>
+    </div>
+    <div class="mt-8 text-center text-xs text-white/50">
+      © <span id="year"></span> Estudio Creativo. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="fixed inset-x-0 bottom-0 bg-red-600 text-white text-center py-2 text-sm z-50">
+      Activa JavaScript para ver las animaciones e interacciones.
+    </div>
+  </noscript>
+
+  <script>
+    // Año dinámico
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
