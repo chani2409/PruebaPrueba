@@ -1,0 +1,116 @@
+/* === Reset y base === */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background-attachment: fixed;
+  color: #fff;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Gradiente animado sutil */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(45, 212, 191, 0.08), transparent 70%),
+              radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.08), transparent 70%);
+  z-index: -2;
+  animation: pulseBackground 12s ease-in-out infinite alternate;
+}
+
+@keyframes pulseBackground {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Hero Canvas (fondo 3D) */
+#hero-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  mix-blend-mode: screen; /* integra el 3D con el gradiente */
+  opacity: 0.9;
+}
+
+/* === Hero === */
+#hero h1 {
+  text-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+}
+
+#hero p {
+  animation: fadeInUp 1.2s ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Indicador scroll */
+#hero .animate-bounce {
+  animation: bounceGlow 1.5s infinite;
+}
+
+@keyframes bounceGlow {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 6px rgba(45, 212, 191, 0.8);
+  }
+  50% {
+    transform: translateY(6px);
+    box-shadow: 0 0 12px rgba(45, 212, 191, 1);
+  }
+}
+
+/* === Featured Cards === */
+.featured-card img {
+  transition: transform 0.6s ease, filter 0.4s ease;
+}
+
+.featured-card:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+.featured-card span {
+  text-shadow: 0 0 10px rgba(45, 212, 191, 0.9);
+}
+
+/* === About Section === */
+#about img {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* === Footer === */
+footer {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(6px);
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* === Responsive tweaks === */
+@media (max-width: 640px) {
+  #hero h1 {
+    font-size: 2.5rem;
+  }
+}
