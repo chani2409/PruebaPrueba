@@ -1,116 +1,261 @@
-/* === Reset y base === */
+/* =========================
+   Variables y sistema base
+========================= */
+:root {
+    --bg-deep-1: #0f172a;
+    --bg-deep-2: #1e293b;
+    --accent-teal: #2dd4bf;
+    --accent-sky: #38bdf8;
+    --accent-violet: #a855f7;
+
+    --font-base: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --font-display: 'Orbitron', system-ui, sans-serif;
+
+    --cursor-size: 10px;
+    --halo-size: 36px;
+    --radius-lg: 1rem;
+
+    --z-header: 50;
+    --z-overlay: 100;
+    --z-cursor: 10000;
+
+    --g1-x: 20%;
+    --g1-y: 30%;
+    --g2-x: 80%;
+    --g2-y: 70%;
+    --bg-opacity: 0.08;
+
+    --particle-color: var(--accent-teal);
+    --particle-size: 0.05;
+}
+
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  background-attachment: fixed;
-  color: #fff;
-  overflow-x: hidden;
-  position: relative;
+    font-family: var(--font-base);
+    background: linear-gradient(135deg, var(--bg-deep-1), var(--bg-deep-2));
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
 }
 
-/* Gradiente animado sutil */
+.font-display {
+    font-family: var(--font-display);
+}
+
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 20% 30%, rgba(45, 212, 191, 0.08), transparent 70%),
-              radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.08), transparent 70%);
-  z-index: -2;
-  animation: pulseBackground 12s ease-in-out infinite alternate;
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: radial-gradient(circle at var(--g1-x) var(--g1-y), rgba(45, 212, 191, var(--bg-opacity)), transparent 70%),
+        radial-gradient(circle at var(--g2-x) var(--g2-y), rgba(56, 189, 248, var(--bg-opacity)), transparent 70%);
+    animation: pulseBackground 12s ease-in-out infinite alternate;
+    will-change: opacity, transform;
+    background-repeat: no-repeat;
 }
 
-@keyframes pulseBackground {
-  from {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.1);
-  }
+/* =========================
+   HERO CINEMÁTICO REACTIVO
+========================= */
+#hero {
+    position: relative;
+    overflow: hidden;
 }
 
-/* Hero Canvas (fondo 3D) */
 #hero-canvas canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
-  mix-blend-mode: screen; /* integra el 3D con el gradiente */
-  opacity: 0.9;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    mix-blend-mode: screen;
+    opacity: 0.9;
+    will-change: transform, opacity;
 }
 
-/* === Hero === */
-#hero h1 {
-  text-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+.hero-title {
+    text-shadow: 0 0 15px rgba(45, 212, 191, 0.6);
+    animation: asf-fadeInUp 1.2s ease both;
+    font-size: clamp(2rem, 5vw, 4rem);
 }
 
-#hero p {
-  animation: fadeInUp 1.2s ease both;
+.hero-subcopy {
+    animation: asf-fadeInUp 1.5s ease both;
+    animation-delay: 0.2s;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Indicador scroll */
 #hero .animate-bounce {
-  animation: bounceGlow 1.5s infinite;
+    animation: asf-bounceGlow 1.5s infinite;
 }
 
-@keyframes bounceGlow {
-  0%, 100% {
-    transform: translateY(0);
-    box-shadow: 0 0 6px rgba(45, 212, 191, 0.8);
-  }
-  50% {
-    transform: translateY(6px);
-    box-shadow: 0 0 12px rgba(45, 212, 191, 1);
-  }
+/* =========================
+   Animaciones clave
+========================= */
+@keyframes pulseBackground {
+    from {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.06);
+    }
 }
 
-/* === Featured Cards === */
+@keyframes asf-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes asf-bounceGlow {
+    0%,
+    100% {
+        transform: translateY(0);
+        box-shadow: 0 0 6px rgba(45, 212, 191, 0.8);
+    }
+    50% {
+        transform: translateY(6px);
+        box-shadow: 0 0 12px rgba(45, 212, 191, 1);
+    }
+}
+
+/* =========================
+   Featured cards
+========================= */
 .featured-card img {
-  transition: transform 0.6s ease, filter 0.4s ease;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    will-change: transform, filter;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
 }
-
 .featured-card:hover img {
-  transform: scale(1.08);
-  filter: brightness(1.1);
+    transform: scale(1.08);
+    filter: brightness(1.1);
 }
-
 .featured-card span {
-  text-shadow: 0 0 10px rgba(45, 212, 191, 0.9);
+    text-shadow: 0 0 10px rgba(45, 212, 191, 0.9);
 }
 
-/* === About Section === */
+/* =========================
+   About image depth
+========================= */
 #about img {
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* === Footer === */
+/* =========================
+   Footer
+========================= */
 footer {
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(6px);
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(6px);
 }
-
 footer a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
-/* === Responsive tweaks === */
+/* =========================
+   Micro-interacciones: Glitch en hover
+========================= */
+.glitch-hover {
+    position: relative;
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--accent-teal);
+}
+
+.glitch-hover:before,
+.glitch-hover:after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-deep-1);
+    overflow: hidden;
+    clip-path: inset(50% 50% 50% 50%);
+    transition: clip-path 0.2s ease-in-out;
+}
+
+.glitch-hover:before {
+    left: -2px;
+    text-shadow: -1px 0 #ff00ff;
+}
+
+.glitch-hover:after {
+    left: 2px;
+    text-shadow: 1px 0 #00ffff;
+}
+
+.glitch-hover:hover:before {
+    animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
+    clip-path: inset(0);
+}
+
+.glitch-hover:hover:after {
+    animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+    clip-path: inset(0);
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip-path: inset(40% 0 60% 0);
+    }
+    100% {
+        clip-path: inset(60% 0 40% 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip-path: inset(0 0 80% 0);
+    }
+    100% {
+        clip-path: inset(80% 0 0 0);
+    }
+}
+
+/* =========================
+   Three.js Canvas
+========================= */
+#hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+}
+
+/* =========================
+   Responsive tweaks
+========================= */
 @media (max-width: 640px) {
-  #hero h1 {
-    font-size: 2.5rem;
-  }
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 2.5rem);
+    }
+}
+
+/* =========================
+   Accesibilidad: reduce motion
+========================= */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    body::before {
+        animation: none !important;
+    }
 }
