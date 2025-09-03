@@ -1,203 +1,147 @@
-// js/main.js
-// Punto de entrada: inicializa año, 3D, animaciones y cursor con arquitectura optimizada.
+// ==========================
+//  IMPORTS (solo si usas módulos)
+// ==========================
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js";
 
-// ----------------------
-// Utilidades globales
-// ----------------------
+// ==========================
+//  HERO ANIMATION BASE
+// ==========================
 
-const logError = (context, err) => {
-    console.error(`[ASFIGES] Error en ${context}:`, err);
-};
+// Si tenías algo ya hecho con GSAP y Three.js, lo mantenemos.
+// Aquí agrego la capa futurista de neón interactiva.
+function initFuturisticBackground() {
+  const container = document.getElementById("hero-canvas");
+  if (!container) return;
 
-const observeVisibility = (el, onEnter, onLeave, threshold = 0.1) => {
-    if (!el) return;
-    const io = new IntersectionObserver(entries => {
-        entries.forEach(e => e.isIntersecting ? onEnter?.() : onLeave?.());
-    }, { threshold });
-    io.observe(el);
-    return io;
-};
+  // === ESCENA ===
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 5;
 
-// ----------------------
-// Funciones principales
-// ----------------------
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
 
-const setYear = () => {
-    const el = document.getElementById('year');
-    if (el) el.textContent = new Date().getFullYear();
-};
+  // === LUCES ===
+  const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+  const point = new THREE.PointLight(0x38bdf8, 1.2);
+  point.position.set(5, 5, 5);
+  scene.add(ambient, point);
 
-const initAnimations = () => {
-    if (!window.gsap || !window.ScrollTrigger) {
-        logError('Animations', 'GSAP o ScrollTrigger no están cargados.');
-        return;
-    }
+  // === FIGURAS 3D ===
+  const materials = [
+    new THREE.MeshStandardMaterial({
+      color: 0x2dd4bf,
+      wireframe: true,
+      emissive: 0x2dd4bf,
+      emissiveIntensity: 0.5,
+    }),
+    new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      emissive: 0x38bdf8,
+      emissiveIntensity: 0.6,
+    }),
+    new THREE.MeshStandardMaterial({
+      color: 0xa855f7,
+      wireframe: true,
+      emissive: 0xa855f7,
+      emissiveIntensity: 0.6,
+    }),
+  ];
 
-    gsap.fromTo('.hero-title', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.5 });
-    gsap.fromTo('#hero p', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, delay: 0.8, ease: 'power3.out' });
+  const shapes = [];
+  for (let i = 0; i < 12; i++) {
+    const geometry =
+      Math.random() > 0.5
+        ? new THREE.IcosahedronGeometry(0.6 + Math.random() * 0.4, 0)
+        : new THREE.TorusKnotGeometry(0.4, 0.12, 100, 16);
 
-    gsap.fromTo('.section-title', { opacity: 0, y: 50, filter: 'blur(10px)' }, {
-        opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power4.out',
-        scrollTrigger: { trigger: '#featured', start: 'top 80%' },
-    });
-
-    gsap.fromTo('.featured-card', { opacity: 0, y: 30 }, {
-        opacity: 1, y: 0, duration: 1, stagger: 0.2,
-        scrollTrigger: { trigger: '#featured', start: 'top 70%' },
-    });
-};
-
-const initHeroScene = async () => {
-    const heroCanvas = document.getElementById('hero-canvas');
-    if (!heroCanvas) return;
-    if (!window.THREE) {
-        logError('Hero 3D', 'Three.js no está cargado.');
-        return;
-    }
-
-    const {
-        WebGLRenderer, Scene, PerspectiveCamera, Points, BufferGeometry, BufferAttribute, ShaderMaterial,
-        AdditiveBlending, Vector3, Color, Clock
-    } = THREE;
-
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
-
-    const renderer = new WebGLRenderer({ canvas: heroCanvas, alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    const vertexShader = `
-        uniform float time;
-        uniform float scrollProgress;
-        uniform vec3 mouse;
-        attribute float size;
-        attribute vec3 color;
-        varying vec3 vColor;
-        void main() {
-            vColor = color;
-            vec3 newPosition = position;
-            newPosition.z += scrollProgress * 100.0;
-            newPosition.x += sin(newPosition.z * 0.1 + time * 0.5) * 2.0;
-            newPosition.y += cos(newPosition.z * 0.1 + time * 0.5) * 2.0;
-            float dist = length(newPosition.xy - mouse.xy);
-            if (dist < 10.0) {
-                newPosition += normalize(newPosition.xy - mouse.xy) * (1.0 - dist / 10.0) * 5.0;
-            }
-            vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
-            gl_PointSize = size * (300.0 / -mvPosition.z);
-            gl_Position = projectionMatrix * mvPosition;
-        }
-    `;
-
-    const fragmentShader = `
-        varying vec3 vColor;
-        void main() {
-            float strength = distance(gl_PointCoord, vec2(0.5));
-            gl_FragColor = vec4(vColor, 1.0 - strength * 2.0);
-        }
-    `;
-
-    const particleCount = 20000;
-    const geometry = new BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
-
-    const color1 = new Color('#00ffff');
-    const color2 = new Color('#ff00ff');
-
-    for (let i = 0; i < particleCount; i++) {
-        positions[i * 3 + 0] = (Math.random() - 0.5) * 200;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-        positions[i * 3 + 2] = Math.random() * -200;
-        
-        const mixedColor = new Color().lerpColors(color1, color2, Math.random());
-        colors[i * 3 + 0] = mixedColor.r;
-        colors[i * 3 + 1] = mixedColor.g;
-        colors[i * 3 + 2] = mixedColor.b;
-        
-        sizes[i] = Math.random() * 2 + 0.5;
-    }
-
-    geometry.setAttribute('position', new BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new BufferAttribute(sizes, 1));
-
-    const material = new ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms: {
-            time: { value: 0 },
-            scrollProgress: { value: 0 },
-            mouse: { value: new Vector3() },
-        },
-        blending: AdditiveBlending,
-        depthWrite: false,
-        transparent: true,
-        vertexColors: true,
-    });
-
-    const points = new Points(geometry, material);
-    scene.add(points);
-
-    const clock = new Clock();
-    const mouse = new Vector3();
-    let isRendering = true;
-
-    const animate = () => {
-        if (isRendering) {
-            requestAnimationFrame(animate);
-        }
-        material.uniforms.time.value = clock.getElapsedTime();
-        material.uniforms.mouse.value.lerp(mouse, 0.1);
-        renderer.render(scene, camera);
+    const mesh = new THREE.Mesh(
+      geometry,
+      materials[Math.floor(Math.random() * materials.length)]
+    );
+    mesh.position.set(
+      (Math.random() - 0.5) * 10,
+      (Math.random() - 0.5) * 6,
+      (Math.random() - 0.5) * 6
+    );
+    mesh.rotationSpeed = {
+      x: Math.random() * 0.01,
+      y: Math.random() * 0.01,
     };
-    animate();
+    scene.add(mesh);
+    shapes.push(mesh);
+  }
 
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+  // === PARTÍCULAS ===
+  const particlesGeometry = new THREE.BufferGeometry();
+  const particlesCount = 400;
+  const posArray = new Float32Array(particlesCount * 3);
+  for (let i = 0; i < particlesCount * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 20;
+  }
+  particlesGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(posArray, 3)
+  );
+
+  const particlesMaterial = new THREE.PointsMaterial({
+    size: 0.05,
+    color: 0x38bdf8,
+    transparent: true,
+    opacity: 0.7,
+  });
+  const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particles);
+
+  // === INTERACCIÓN MOUSE ===
+  const mouse = { x: 0, y: 0 };
+  document.addEventListener("mousemove", (e) => {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  // === ANIMACIÓN ===
+  function animate() {
+    requestAnimationFrame(animate);
+
+    shapes.forEach((obj) => {
+      obj.rotation.x += obj.rotationSpeed.x;
+      obj.rotation.y += obj.rotationSpeed.y;
     });
 
-    window.addEventListener('mousemove', (e) => {
-        const vector = new Vector3(
-            (e.clientX / window.innerWidth) * 2 - 1,
-            -(e.clientY / window.innerHeight) * 2 + 1,
-            0.5
-        );
-        vector.unproject(camera);
-        const dir = vector.sub(camera.position).normalize();
-        const distance = -camera.position.z / dir.z;
-        mouse.copy(camera.position.add(dir.multiplyScalar(distance)));
-    });
+    particles.rotation.y += 0.0008;
+    particles.rotation.x += 0.0004;
 
-    if (window.gsap && window.ScrollTrigger) {
-        ScrollTrigger.create({
-            trigger: '#main',
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 1,
-            onUpdate: self => {
-                material.uniforms.scrollProgress.value = self.progress;
-            },
-        });
-    }
-};
+    camera.position.x += (mouse.x * 0.8 - camera.position.x) * 0.02;
+    camera.position.y += (mouse.y * 0.6 - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
 
-// ----------------------
-// Inicialización global
-// ----------------------
-const init = () => {
-    setYear();
-    initAnimations();
-    initHeroScene();
-};
+    renderer.render(scene, camera);
+  }
+  animate();
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
+  // === RESPONSIVE ===
+  window.addEventListener("resize", () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
 }
+
+// ==========================
+//  MAIN INIT
+// ==========================
+document.addEventListener("DOMContentLoaded", () => {
+  initFuturisticBackground();
+
+  // Ejemplo: si ya tienes tu propia animación con Three.js
+  // initMyOriginalHeroScene();
+  // initGSAPAnimations();
+});
